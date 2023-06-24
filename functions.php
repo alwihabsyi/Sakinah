@@ -25,7 +25,7 @@ if (mysqli_connect_errno()) {
 function login($data)
 {
     global $conn;
-    $cekPegawai = "SELECT * FROM pegawai p WHERE p.USERNAME = '$data[username]' and p.PASSWORD = '$data[password]'";
+    $cekPegawai = "SELECT * FROM pegawai p WHERE p.USERNAME = '$data[username]' and p.PASSWORD = MD5('$data[password]')";
     $hasil = mysqli_query($conn, $cekPegawai);
 
     if (mysqli_num_rows($hasil) > 0) {
@@ -77,7 +77,7 @@ function tambahProduk($data)
     $harga = $data["hargabrg"];
     $stok = $data["jumlahbrg"];
     //  query insert data
-    $query = "INSERT INTO BARANG VALUES ('$kodebrg','$kodektg','$namabrg','$harga','$stok')";
+    $query = "INSERT INTO barang VALUES ('$kodebrg','$kodektg','$namabrg','$harga','$stok')";
     mysqli_query($conn, $query);
 
     //cek apakah data berhasil ditambahkan atau tidak
@@ -89,7 +89,7 @@ function generateKodeBarang()
     global $conn;
 
     // Mendapatkan kode barang terakhir dari database
-    $query = "SELECT ID_BARANG FROM BARANG ORDER BY ID_BARANG DESC LIMIT 1";
+    $query = "SELECT ID_BARANG FROM barang ORDER BY ID_BARANG DESC LIMIT 1";
     $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
@@ -113,7 +113,7 @@ function generateKodeBarang()
 function hapusBarang($id)
 {
     global $conn;
-    mysqli_query($conn, "DELETE FROM BARANG WHERE ID_BARANG ='$id'");
+    mysqli_query($conn, "DELETE FROM barang WHERE ID_BARANG ='$id'");
     return mysqli_affected_rows($conn);
 }
 
@@ -127,7 +127,7 @@ function ubahBarang($data)
     $harga = $data["hargabrg"];
     $stok = $data["jumlahbrg"];
     //  query ubah data
-    $query = "UPDATE BARANG SET 
+    $query = "UPDATE barang SET 
         ID_BARANG='$kodebrg',
         ID_KATEGORI='$kodektg',
         NAMA_BARANG='$namabrg',
@@ -153,7 +153,7 @@ function tambahMember($data)
     $nombr = $data["nombr"];
     $alamatmbr = $data["alamatmbr"];
     //  query insert data
-    $query = "INSERT INTO PELANGGAN VALUES ('$kodembr','$namambr','$nombr','$alamatmbr')";
+    $query = "INSERT INTO pelanggan VALUES ('$kodembr','$namambr','$nombr','$alamatmbr')";
     mysqli_query($conn, $query);
 
     //cek apakah data berhasil ditambahkan atau tidak
@@ -166,7 +166,7 @@ function generateKodeMember()
     global $conn;
 
     // Mendapatkan kode barang terakhir dari database
-    $query = "SELECT ID_PELANGGAN FROM PELANGGAN ORDER BY ID_PELANGGAN DESC LIMIT 1";
+    $query = "SELECT ID_PELANGGAN FROM pelanggan ORDER BY ID_PELANGGAN DESC LIMIT 1";
     $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
@@ -190,7 +190,7 @@ function generateKodeMember()
 function hapusMember($id)
 {
     global $conn;
-    mysqli_query($conn, "DELETE FROM PELANGGAN WHERE ID_PELANGGAN ='$id'");
+    mysqli_query($conn, "DELETE FROM pelanggan WHERE ID_PELANGGAN ='$id'");
     return mysqli_affected_rows($conn);
 }
 
@@ -237,7 +237,7 @@ function tambahPegawai($data)
     $user = $data["ussernamepgw"];
     $pw = $data["passwordpgw"];
     //  query insert data
-    $query = "INSERT INTO PEGAWAI VALUES ('$kodepgw','$kodejbt','$namapgw','$alamatpgw','$nopgw','$user','$pw')";
+    $query = "INSERT INTO pegawai VALUES ('$kodepgw','$kodejbt','$namapgw','$alamatpgw','$nopgw','$user','$pw')";
     mysqli_query($conn, $query);
 
     //cek apakah data berhasil ditambahkan atau tidak
@@ -250,7 +250,7 @@ function generateKodePegawai()
     global $conn;
 
     // Mendapatkan kode barang terakhir dari database
-    $query = "SELECT ID_PEGAWAI FROM PEGAWAI ORDER BY ID_PEGAWAI DESC LIMIT 1";
+    $query = "SELECT ID_PEGAWAI FROM pegawai ORDER BY ID_PEGAWAI DESC LIMIT 1";
     $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
@@ -274,7 +274,7 @@ function generateKodePegawai()
 function hapusPegawai($id)
 {
     global $conn;
-    mysqli_query($conn, "DELETE FROM PEGAWAI WHERE ID_PEGAWAI ='$id'");
+    mysqli_query($conn, "DELETE FROM pegawai WHERE ID_PEGAWAI ='$id'");
     return mysqli_affected_rows($conn);
 }
 
@@ -291,7 +291,7 @@ function ubahPegawai($data)
     $user = $data["ussernamepgw"];
     $pw = $data["passwordpgw"];
     //  query ubah data
-    $query = "UPDATE PEGAWAI SET 
+    $query = "UPDATE pegawai SET 
         ID_PEGAWAI='$kodepgw',
         ID_JABATAN='$kodejbt',
         NAMA_PEGAWAI='$namapgw',
@@ -314,7 +314,7 @@ function generateKodeTransaksi()
     global $conn;
 
     // Mendapatkan kode barang terakhir dari database
-    $query = "SELECT ID_TRANSAKSI FROM TRANSAKSI ORDER BY ID_TRANSAKSI DESC LIMIT 1";
+    $query = "SELECT ID_TRANSAKSI FROM transaksi ORDER BY ID_TRANSAKSI DESC LIMIT 1";
     $result = mysqli_query($conn, $query);
 
     if (mysqli_num_rows($result) > 0) {
@@ -386,7 +386,7 @@ function pembayaran($data)
             foreach ($dataproduk as $row) {
                 $stok = $row['STOK'] - $value['jumlahbarang'];
             }
-            $queryUB = "UPDATE BARANG SET STOK = $stok WHERE ID_BARANG ='$value[kodebarang]'";
+            $queryUB = "UPDATE barang SET STOK = $stok WHERE ID_BARANG ='$value[kodebarang]'";
             mysqli_query($conn, $queryUB);
         } else {
             $queryG1 = "delete from detail_transaksi where ID_TRANSAKSI = '$idTransaksi'";
